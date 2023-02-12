@@ -2,13 +2,14 @@ import express from "express"
 import cors from "cors"
 import dotenv from "dotenv";
 import gamerRouter from "./routers/gamer.router.js"
+import clienteRouter from "./routers/customers.router.js"
 
 dotenv.config()
 const app = express()
 app.use(express.json())
 app.use(cors())
 
-app.use([gamerRouter])
+app.use([gamerRouter, clienteRouter])
 
 
 const port = process.env.PORT || 5000;
