@@ -5,8 +5,6 @@ export const listarClientes = async (req, res) => {
         const clientes = await db.query(`
             SELECT * FROM customers;
         `)
-        
-        if(clientes.rows.length === 1) return res.send(clientes.rows[0])
         res.send(clientes.rows)
     } catch (error) {
         res.sendStatus(500)
@@ -24,7 +22,7 @@ export const pegarClientePeloId = async (req, res) => {
 
         if(cliente.rows.length === 0) return res.sendStatus(404)
 
-        res.send(cliente.rows)
+        res.send(cliente.rows[0])
     } catch (error) {
         res.sendStatus(500)
     }
