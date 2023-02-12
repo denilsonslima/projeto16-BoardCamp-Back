@@ -25,7 +25,7 @@ export const adicionarAluguel = async (req,res) => {
         WHERE "gameId"=$1;  
         `, [gameId])
 
-        if(customerValid.rows.length === 0 || gamerValid.rows.length === 0 || rentalsValid.rows.length > gamerValid.rows[0].stockTotal) return res.sendStatus(400)
+        if(customerValid.rows.length === 0 || gamerValid.rows.length === 0 || rentalsValid.rows.length >= gamerValid.rows[0].stockTotal) return res.sendStatus(400)
 
         const valor = gamerValid.rows[0].pricePerDay * daysRented
 
