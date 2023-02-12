@@ -54,6 +54,7 @@ export const atualizarCliente = async (req, res) => {
     const id = req.params.id;
     try {
         if(!name || cpf.length !== 11 || phone.length < 10 || phone.length > 11 || isNaN(cpf)) return res.sendStatus(400);
+        if(!name || cpf.length !== 11 || phone.length < 10 || phone.length > 11 || isNaN(cpf)) return res.sendStatus(400);
 
         const cliente = await db.query(`
         SELECT * FROM customers WHERE id=$1;
