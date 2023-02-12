@@ -8,6 +8,6 @@ const router = Router()
 router.get("/customers", listarClientes)
 router.get("/customers/:id", pegarClientePeloId)
 router.post("/customers", validateSchema(Schema), inserirCliente)
-router.put("/customers", validateSchema(Schema), atualizarCliente)
+router.put("/customers/:id", validateSchema(Schema), atualizarCliente)
 
 export default router
