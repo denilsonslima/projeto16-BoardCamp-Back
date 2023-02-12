@@ -5,6 +5,8 @@ export const listarClientes = async (req, res) => {
         const clientes = await db.query(`
             SELECT * FROM customers;
         `)
+        
+        if(clientes.rows.length === 1) return res.send(clientes.rows[0])
         res.send(clientes.rows)
     } catch (error) {
         res.sendStatus(500)
