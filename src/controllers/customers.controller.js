@@ -31,6 +31,12 @@ export const pegarClientePeloId = async (req, res) => {
 export const inserirCliente = async (req, res) => {
     const {name, phone, cpf, birthday} = req.body;
     try {
+        const cpfUser = await db.query(`
+        SELECT * FROM customers WHERE cpf:$1;
+        `, [cpf])
+
+        if(cpfUser.rows.length > 0 || !name) return res.sendStatus(400)
+
         await db.query(`
         INSERT INTO customers
         (name, phone, cpf, birthday)
@@ -47,7 +53,7 @@ export const atualizarCliente = async (req, res) => {
     const {name, phone, cpf, birthday} = req.body;
     const id = req.params.id;
     try {
-        if(!name || cpf.length !== 11 || phone.length < 10 || phone.length > 11) return res.sendStatus(400);
+        if(!name || cpf.length !== 11 || phone.length < 10 || phone.length > 11 || isNaN(cpf)) return res.sendStatus(400);
 
         const cliente = await db.query(`
         SELECT * FROM customers WHERE id=$1;
