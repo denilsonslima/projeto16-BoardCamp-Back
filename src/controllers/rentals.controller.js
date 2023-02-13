@@ -74,8 +74,6 @@ export const adicionarAluguel = async (req,res) => {
 
 export const finalizarAluguel = async (req, res) => {
     const id = req.params.id;
-    // const data = dayjs().format("YYYY-MM-DD")
-    // const dia = dayjs().format("DD")
     try {
         const idExiste = await db.query(`
         SELECT * FROM
@@ -85,25 +83,9 @@ export const finalizarAluguel = async (req, res) => {
         WHERE rentals.id=$1;
         `, [id])
 
-        if(idExiste.rows.length === 0) return res.sendStatus(404);
-
-        // const teste = await db.query(`
-        // select * from rentals where id=$1 AND "returnDate" is null;
-        // `, [id])
-
-        // if(teste.rowCount !== 1) return res.sendStatus(400)
-
-        // const diaEntrega = dayjs(idExiste.rows[0].rentDate).format("DD")
-        // const delay = (dia - diaEntrega) * idExiste.rows[0].pricePerDay
-
-        // console.log(delay)
-        // // db.query(`
-        // // UPDATE rentals set
-        // // "returnDate"= ${ data }, "delayFee"=${delay} WHERE id=${id};
-        // // `)
-
-        // res.send()
-        const rentalUpdateQuery = `
+        if(idExiste.rows.length === 0) return res.sendStatus(404);   
+          
+        const dados = `
         UPDATE rentals
         SET "returnDate" = NOW(),
             "delayFee" = CASE
@@ -113,8 +95,8 @@ export const finalizarAluguel = async (req, res) => {
                          END
         WHERE "id" = $1 AND "returnDate" IS NULL;
         `;
-        const rentalUpdate = await db.query(rentalUpdateQuery, [id]);
-        if (rentalUpdate.rowCount === 1) {
+        const Update = await db.query(dados, [id]);
+        if (Update.rowCount === 1) {
           return res.sendStatus(200);
         } else {
           return res.sendStatus(400);
@@ -127,15 +109,11 @@ export const finalizarAluguel = async (req, res) => {
 export const apagarAluguel = async (req, res) => {
     try {
         const { id } = req.params;
-        
-        let rental = await db.query('SELECT * FROM rentals WHERE "id" = $1', [id]);
-        rental = rental.rows[0];
-        if (!rental) return res.sendStatus(404);
-    
-        if (!rental.returnDate) return res.sendStatus(400);
-    
+        let dados = await db.query('SELECT * FROM rentals WHERE "id" = $1', [id]);
+        dados = dados.rows[0];
+        if (!dados) return res.sendStatus(404);
+        if (!dados.returnDate) return res.sendStatus(400);
         await db.query('DELETE FROM rentals WHERE "id" = $1', [id]);
-    
         return res.sendStatus(200);
     } catch (error) {
         res.sendStatus(500)
