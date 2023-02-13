@@ -111,9 +111,15 @@ export const apagarAluguel = async (req, res) => {
         SELECT * FROM rentals WHERE id=$1;
         `, [id])
 
-        if(idExiste.rows.length === 0) return res.sendStatus(404);
+        if(idExiste.rowCount !== 1) return res.sendStatus(404);
 
-        if(idExiste.rows[0].returnDate === null) return res.sendStatus(400)
+        const rentalIsFinished = await db.query(
+        'SELECT * FROM rentals WHERE id = $1 AND "returnDate" IS NOT NULL',
+        [id]
+        );
+        if (rentalIsFinished.rowCount !== 1) {
+        return res.sendStatus(400);
+        }
 
         await db.query(`
         DELETE FROM rentals WHERE id=$1;
