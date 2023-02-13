@@ -87,7 +87,7 @@ export const finalizarAluguel = async (req, res) => {
 
         if(idExiste.rows.length === 0) return res.sendStatus(404);
 
-        if(idExiste.rows[0].returnDate !== null) return res.sendStatus(400)
+        if(idExiste.rows[0].returnDate != null) return res.sendStatus(400)
 
         const diaEntrega = dayjs(idExiste.rows[0].rentDate).format("DD")
         const delay = (dia - diaEntrega) * idExiste.rows[0].pricePerDay
