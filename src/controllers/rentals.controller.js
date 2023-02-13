@@ -107,26 +107,26 @@ export const finalizarAluguel = async (req, res) => {
 export const apagarAluguel = async (req, res) => {
     const id = req.params.id;
     try {
-        const idExiste = await db.query(`
-        SELECT * FROM rentals WHERE id=$1;
-        `, [id])
+        const idExiste = await db.query('SELECT * FROM rentals WHERE id = $1',
+        [id])
 
-        if(idExiste.rowCount !== 1) return res.sendStatus(404);
-
-        const rentalIsFinished = await db.query(
-        'SELECT * FROM rentals WHERE id = $1 AND "returnDate" IS NOT NULL',
-        [id]
-        );
-        
-        if (rentalIsFinished.rowCount !== 1) {
-        return res.sendStatus(400);
+        if (idExiste.rowCount !== 1) {
+        return res.sendStatus(404);
         }
 
-        await db.query(`
-        DELETE FROM rentals WHERE id=$1;
-        `, [id])
-
-        res.send()
+        const finalizar = await db.query(
+        'SELECT * FROM rentals WHERE id = $1 AND "returnDate" IS NOT NULL',
+        [id])
+        
+        if (finalizar.rowCount !== 1) {
+        return res.sendStatus(400);
+        }
+        
+        await db.query('DELETE FROM rentals WHERE id = $1', [
+        rentalId,
+        ])
+        
+        return res.sendStatus(200);
     } catch (error) {
         res.sendStatus(500)
     }
