@@ -27,8 +27,9 @@ export const listarAlugueis = async (req, res) => {
         JOIN games
             ON games.id = r."gameId";
         `)
+        const teste = dados.rows.map(info => (info.json_build_object))
 
-        res.send(dados.rows)
+        res.send(teste)
         
     } catch (error) {
         res.sendStatus(500)
