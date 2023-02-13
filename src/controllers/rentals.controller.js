@@ -87,22 +87,38 @@ export const finalizarAluguel = async (req, res) => {
 
         if(idExiste.rows.length === 0) return res.sendStatus(404);
 
-        const teste = await db.query(`
-        select * from rentals where id=$1 AND "returnDate" is null;
-        `, [id])
+        // const teste = await db.query(`
+        // select * from rentals where id=$1 AND "returnDate" is null;
+        // `, [id])
 
-        if(teste.rowCount !== 1) return res.sendStatus(400)
+        // if(teste.rowCount !== 1) return res.sendStatus(400)
 
-        const diaEntrega = dayjs(idExiste.rows[0].rentDate).format("DD")
-        const delay = (dia - diaEntrega) * idExiste.rows[0].pricePerDay
+        // const diaEntrega = dayjs(idExiste.rows[0].rentDate).format("DD")
+        // const delay = (dia - diaEntrega) * idExiste.rows[0].pricePerDay
 
-        console.log(delay)
-        // db.query(`
-        // UPDATE rentals set
-        // "returnDate"= ${ data }, "delayFee"=${delay} WHERE id=${id};
-        // `)
+        // console.log(delay)
+        // // db.query(`
+        // // UPDATE rentals set
+        // // "returnDate"= ${ data }, "delayFee"=${delay} WHERE id=${id};
+        // // `)
 
-        res.send()
+        // res.send()
+        const rentalUpdateQuery = `
+        UPDATE rentals
+        SET "returnDate" = NOW(),
+            "delayFee" = CASE
+                            WHEN EXTRACT(DAY FROM age(NOW(), "rentDate")) > "daysRented"
+                            THEN ("originalPrice" / "daysRented") * (EXTRACT(DAY FROM age(NOW(), "rentDate")) - "daysRented")
+                            ELSE NULL
+                         END
+        WHERE "id" = $1 AND "returnDate" IS NULL;
+        `;
+        const rentalUpdate = await db.query(rentalUpdateQuery, [rentalId]);
+        if (rentalUpdate.rowCount === 1) {
+          return res.sendStatus(200);
+        } else {
+          return res.sendStatus(400);
+        }
     } catch (error) {
         res.sendStatus(500)
     }
