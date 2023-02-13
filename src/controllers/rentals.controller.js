@@ -74,8 +74,8 @@ export const adicionarAluguel = async (req,res) => {
 
 export const finalizarAluguel = async (req, res) => {
     const id = req.params.id;
-    const data = dayjs().format("YYYY-MM-DD")
-    const dia = dayjs().format("DD")
+    // const data = dayjs().format("YYYY-MM-DD")
+    // const dia = dayjs().format("DD")
     try {
         const idExiste = await db.query(`
         SELECT * FROM
@@ -113,7 +113,7 @@ export const finalizarAluguel = async (req, res) => {
                          END
         WHERE "id" = $1 AND "returnDate" IS NULL;
         `;
-        const rentalUpdate = await db.query(rentalUpdateQuery, [rentalId]);
+        const rentalUpdate = await db.query(rentalUpdateQuery, [id]);
         if (rentalUpdate.rowCount === 1) {
           return res.sendStatus(200);
         } else {
