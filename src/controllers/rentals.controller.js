@@ -117,6 +117,7 @@ export const apagarAluguel = async (req, res) => {
         'SELECT * FROM rentals WHERE id = $1 AND "returnDate" IS NOT NULL',
         [id]
         );
+        
         if (rentalIsFinished.rowCount !== 1) {
         return res.sendStatus(400);
         }
