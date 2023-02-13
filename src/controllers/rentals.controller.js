@@ -108,7 +108,7 @@ export const apagarAluguel = async (req, res) => {
     const id = req.params.id;
     try {
         const idExiste = await db.query(`
-        SELECT * FROM rentals WHERE id=$1
+        SELECT * FROM rentals WHERE id=$1;
         `, [id])
 
         if(idExiste.rows.length === 0) return res.sendStatus(404);
